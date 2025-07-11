@@ -1,8 +1,8 @@
 <?php
 
-session_start();
-
 require 'connection.php';
+
+session_start();
 
 ?>
 
@@ -24,6 +24,7 @@ require 'connection.php';
 
 <body>
     <?php include('navbar.php'); ?>
+    <?php include('message.php'); ?>
     <div class="container mt-4">
         <div class="row">
             <div>
@@ -66,14 +67,14 @@ require 'connection.php';
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5>Editar Livro</h5>
                                         <div class="d-flex align-items-center">
-                                            <a href="/excluir-livro.php?id=123" class="btn btn-link text-secondary me-2 text-decoration-none btn-sm">Excluir</a>
+                                            <button class="btn btn-link text-secondary me-2 text-decoration-none btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#deleteBook">Excluir</button>
                                             <button class="btn btn-dark rounded-pill btn-sm" type="submit" name="update_book">Salvar</button>
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
-                                        <label for="titulo" class="col-sm-2 col-form-label">Título</label>
+                                        <label for="title" class="col-sm-2 col-form-label">Título</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título do livro" value="<?= htmlspecialchars($book['title']) ?>">
+                                            <input type="text" class="form-control" id="title" name="title" placeholder="Título do livro" value="<?= htmlspecialchars($book['title']) ?>">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
@@ -107,6 +108,23 @@ require 'connection.php';
                                         </div>
                                     </div>
 
+                                    <div class="modal" id="deleteBook" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteBookLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="deleteBookLabel">Deletar Livro</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Deseja apagar mesmo este livro?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-link text-secondary me-2 text-decoration-none btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" name="delete_book" class="btn btn-dark rounded-pill">Confirmar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -125,7 +143,7 @@ require 'connection.php';
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

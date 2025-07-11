@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_book'])) {
             $stmt->execute([$title, $author, $status, $checked_out_by, $book_id]);
 
             $_SESSION['message'] = [
-                'text' => 'Livro registrado com sucesso!',
+                'text' => 'Livro atualizado com sucesso!',
                 'type' => 'success'
             ];
 
@@ -71,16 +71,54 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_book'])) {
             exit;
         } catch (PDOException $err) {
             $_SESSION['message'] = [
-                'text' => 'Ouve um erro ao registrar um livro!',
-                'type' => 'danger'
+                'text' => 'Ouve um erro ao atualizar o livro!',
+                'type' => 'warning'
             ];
+            header('Location: update-book.php?id=' . $book_id);
             exit;
         }
     } else {
         $_SESSION['message'] = [
             'text' => 'Preencha todos os campos pedidos!',
-            'type' => 'alert'
+            'type' => 'secondary'
         ];
+
+        header('Location: update-book.php?id=' . $book_id);
+        exit;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_book'])) {
+    $book_id = $_POST['id'] ?? null;
+
+    if (!$book_id || !is_numeric($book_id)) {
+        $_SESSION['message'] = [
+            'text' => 'ID do livro inválido.',
+            'type' => 'danger'
+        ];
+
+        header('Location: index.php');
+        exit;
+    }
+
+    try {
+        $sql = "DELETE FROM books WHERE id=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$book_id]);
+
+        $_SESSION['message'] = [
+            'text' => 'Livro deletado com sucesso!',
+            'type' => 'success'
+        ];
+
+        header('Location: index.php');
+        exit;
+    } catch (PDOException $err) {
+        $_SESSION['message'] = [
+            'text' => 'Ouve um erro ao deletar o livro!',
+            'type' => 'warning'
+        ];
+        header('Location: update-book.php?id=' . $book_id);
         exit;
     }
 }

@@ -13,7 +13,7 @@ if (isset($_SESSION['message'])) {
     <div class="container mt-4">
         <div class="alert alert-<?php echo $message['type'] ?>" role="alert">
             <?= htmlspecialchars($message['text']) ?>
-            <button class="btn btn-close btn-sm float-end" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            <button class=  "btn btn-close btn-sm float-end" data-bs-dismiss="alert" aria-label="Fechar"></button>
         </div>
     </div>
 <?php endif; ?>

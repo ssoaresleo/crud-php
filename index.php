@@ -35,7 +35,9 @@ require 'connection.php'
                             <a href="/register-book.php" class="btn btn-dark rounded-pill btn-sm">Adicionar</a>
                         </div>
                         <div class="card-body mt-4">
-                            <input type="text" class="form-control" placeholder="Buscar livro">
+                            <form action="" class="d-flex">
+                                <input type="text" id="search" name="search" class="form-control" placeholder="Buscar livro" required>
+                            </form>
                             <table class="table mt-3">
                                 <thead>
                                     <tr>
@@ -48,8 +50,18 @@ require 'connection.php'
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT * FROM books";
-                                    $stmt = $conn->prepare($sql);
+
+                                    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+                                    if (!empty($search)) {
+                                        $sql = "SELECT * FROM books WHERE title LIKE :search OR author LIKE :search";
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bindValue(':search', '%' . $search . '%');
+                                    } else {
+                                        $sql = "SELECT * FROM books";
+                                        $stmt = $conn->prepare($sql);
+                                    }
+
                                     $stmt->execute();
                                     $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -85,8 +97,6 @@ require 'connection.php'
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>
