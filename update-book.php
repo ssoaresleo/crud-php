@@ -2,8 +2,15 @@
 
 require 'connection.php';
 
-session_start();
+if (!isset($_SESSION)) {
+    session_start();
+}
 
+
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -100,10 +107,11 @@ session_start();
                                         <label for="checked_out_by" class="col-sm-2 col-form-label">Retirado por</label>
                                         <div class="col-sm-10">
                                             <select class="form-select" id="checked_out_by" name="checked_out_by">
-                                                <option value="João Ferreira" <?= $book['checked_out_by'] === 'João Ferreira' ? 'selected' : '' ?>>João Ferreira</option>
-                                                <option value="Maria Souza" <?= $book['checked_out_by'] === 'Maria Souza' ? 'selected' : '' ?>>Maria Souza</option>
-                                                <option value="Ana Oliveira" <?= $book['checked_out_by'] === 'Ana Oliveira' ? 'selected' : '' ?>>Ana Oliveira</option>
-                                                <option value="Carlos Lima" <?= $book['checked_out_by'] === 'Carlos Lima' ? 'selected' : '' ?>>Carlos Lima</option>
+                                                <?php if ($_SESSION['user']): ?>
+                                                    <option value="<?= htmlspecialchars($_SESSION['user']['id']) ?>" selected>
+                                                        <?= htmlspecialchars($_SESSION['user']['name']) ?>
+                                                    </option>
+                                                <?php endif; ?>
                                             </select>
                                         </div>
                                     </div>

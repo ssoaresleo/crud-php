@@ -1,7 +1,15 @@
 <?php
-session_start();
+require 'connection.php';
 
-require 'connection.php'
+if (!isset($_SESSION)) {
+    session_start();
+}
+
+
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit;
+}
 
 ?>
 
@@ -50,6 +58,7 @@ require 'connection.php'
                                 </thead>
                                 <tbody>
                                     <?php
+
 
                                     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 

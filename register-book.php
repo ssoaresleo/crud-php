@@ -1,3 +1,17 @@
+<?php
+
+if (!isset($_SESSION)) {
+    session_start();
+}
+
+
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit;
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -16,6 +30,7 @@
 
 <body>
     <?php include('navbar.php'); ?>
+    <?php include('message.php'); ?>
     <div class="container mt-4">
         <div class="row">
             <div>
@@ -45,7 +60,7 @@
                                     <div class="col-sm-10">
                                         <select class="form-select" id="status" name="status">
                                             <option selected disabled>Selecione o status</option>
-                                            <option value="disponivel">Disponível</option>
+                                            <option value="disponivel" selected>Disponível</option>
                                             <option value="emprestado">Emprestado</option>
                                             <option value="reservado">Reservado</option>
                                         </select>
@@ -56,11 +71,11 @@
                                     <label for="checked_out_by" class="col-sm-2 col-form-label">Retirado por</label>
                                     <div class="col-sm-10">
                                         <select class="form-select" id="checked_out_by" name="checked_out_by">
-                                            <option selected disabled>Selecione o usuário</option>
-                                            <option value="João Ferreira">João Ferreira</option>
-                                            <option value="Maria Souza">Maria Souza</option>
-                                            <option value="Ana Oliveira">Ana Oliveira</option>
-                                            <option value="Carlos Lima">Carlos Lima</option>
+                                            <?php if ($_SESSION['user']): ?>
+                                                <option value="<?= htmlspecialchars($_SESSION['user']['id']) ?>" selected>
+                                                    <?= htmlspecialchars($_SESSION['user']['name']) ?>
+                                                </option>
+                                            <?php endif; ?>
                                         </select>
                                     </div>
                                 </div>

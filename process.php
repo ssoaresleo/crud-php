@@ -8,13 +8,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register_book'])) {
     $title = $_POST['title'] ?? null;
     $author = $_POST['author'] ?? null;
     $status = $_POST['status'] ?? null;
+
     $checked_out_by = $_POST['checked_out_by'] ?? null;
 
-    if (!empty($title) && !empty($author) && !empty($status) && !empty($checked_out_by)) {
+    if (!empty($checked_out_by)) {
+        try {
+            $sql = "SELECT * FROM users WHERE id=?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$checked_out_by]);
+
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                $_SESSION['message'] = [
+                    'text' => 'Usuário não encontrado!',
+                    'type' => 'danger'
+                ];
+                header('Location: register-book.php');
+                exit;
+            }
+        } catch (PDOException $err) {
+            echo "Ouve um erro ao buscar usuário";
+        }
+    }
+
+    $username = $user['name'];
+
+
+    if (!empty($title) && !empty($author) && !empty($status)) {
         try {
             $sql = "INSERT INTO books (title, author,`status`, checked_out_by) VALUES (?,?,?,?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$title, $author, $status, $checked_out_by]);
+            $stmt->execute([$title, $author, $status, $username]);
 
             $_SESSION['message'] = [
                 'text' => 'Livro registrado com sucesso!',
@@ -28,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['register_book'])) {
                 'text' => 'Ouve um erro ao registrar um livro!',
                 'type' => 'danger'
             ];
+            header('Location: register-book.php');
             exit;
         }
     } else {
@@ -56,11 +82,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_book'])) {
         exit;
     }
 
-    if (!empty($title) && !empty($author) && !empty($status) && !empty($checked_out_by)) {
+    if (!empty($checked_out_by)) {
+        try {
+            $sql = "SELECT * FROM users WHERE id=?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$checked_out_by]);
+
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                $_SESSION['message'] = [
+                    'text' => 'Usuário não encontrado!',
+                    'type' => 'danger'
+                ];
+                header('Location: update-book.php?id=' . $book_id);
+                exit;
+            }
+        } catch (PDOException $err) {
+            echo "Ouve um erro ao buscar usuário";
+        }
+    }
+
+    $username = $user['name'];
+
+
+    if (!empty($title) && !empty($author) && !empty($status)) {
         try {
             $sql = "UPDATE books SET title=?, author=?,`status`=?, checked_out_by=? WHERE id=?";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$title, $author, $status, $checked_out_by, $book_id]);
+            $stmt->execute([$title, $author, $status, $username, $book_id]);
 
             $_SESSION['message'] = [
                 'text' => 'Livro atualizado com sucesso!',
